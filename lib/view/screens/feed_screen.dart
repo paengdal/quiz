@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:get/get.dart';
 import 'package:quiz_first/constants/common_size.dart';
+import 'package:quiz_first/repo/user_network_repository.dart';
 import 'package:quiz_first/view/screens/feed/quiz_detail_screen.dart';
 import 'package:quiz_first/view/widgets/quiz_post.dart';
 

@@ -27,4 +27,16 @@ class UserModel {
           snapshot.id,
           snapshot.reference,
         );
+
+  static Map<String, dynamic> getMapForCreateUser(String email) {
+    Map<String, dynamic> map = Map();
+    map[KEY_PROFILEIMG] = "";
+    map[KEY_USERNAME] = email.split("@")[0];
+    map[KEY_EMAIL] = email;
+    map[KEY_LIKEDPOSTS] = [];
+    map[KEY_NUMOFFOLLOWERS] = 0;
+    map[KEY_FOLLOWINGS] = [];
+    map[KEY_MYPOSTS] = [];
+    return map;
+  }
 }

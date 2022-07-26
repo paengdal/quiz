@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_login_facebook/flutter_login_facebook.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:quiz_first/repo/user_network_repository.dart';
 import 'package:quiz_first/view/screens/auth_screen.dart';
 import 'package:quiz_first/view/widgets/my_progress_indicator.dart';
 
@@ -26,6 +27,7 @@ class FirebaseAuthController extends GetxController {
   }
 
   void registerUser(
+      // 고민: createUserWithEmailAndPassword가 Future인데 registerUser를 Future<void>로 하지 않아도 되는지?
       {required String email,
       required String password,
       required BuildContext context,
@@ -35,7 +37,7 @@ class FirebaseAuthController extends GetxController {
         MaterialPageRoute(
             builder: (context) => MyProgressIndicator(),
             fullscreenDialog: true));
-    await _firebaseAuth
+    UserCredential userCredential = await _firebaseAuth
         .createUserWithEmailAndPassword(
             email: email.trim(), password: password.trim())
         .catchError((error) {
@@ -82,7 +84,24 @@ class FirebaseAuthController extends GetxController {
 
       // );
     });
+
     Navigator.pop(context);
+
+    User user = userCredential.user!; // 고민: non-nullabel이 맞나?..
+    if (user == null) {
+      Get.snackbar('계정 생성 에러', '회원가입이 실패했습니다. 다시 시도해주세요.',
+          snackPosition: SnackPosition.BOTTOM,
+          duration: Duration(seconds: 3),
+          backgroundColor: Colors.black87,
+          margin: EdgeInsets.all(0),
+          borderRadius: 0,
+          // isDismissible: true,
+          // dismissDirection: DismissDirection.horizontal,
+          colorText: Colors.white);
+    } else {
+      await userNetworkRepository.attemptCreateUser(
+          userKey: user.uid, email: user.email!);
+    }
   }
 
   void login(
