@@ -1,6 +1,6 @@
-const COLLECTION_USERS = 'Users';
-const COLLECTION_POSTS = 'Posts';
-const COLLECTION_COMMENTS = 'Comments';
+const COL_USERS = 'Users';
+const COL_POSTS = 'Posts';
+const COL_COMMENTS = 'Comments';
 
 const KEY_USERKEY = 'user_key';
 const KEY_PROFILEIMG = 'profiel_img';
