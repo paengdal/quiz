@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "109100865733",
+    "project_id": "quizfirst-d98f7",
+    "storage_bucket": "quizfirst-d98f7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:109100865733:android:bddc4c47d7bbe6e1e378ac",
+        "android_client_info": {
+          "package_name": "com.neovision77.quiz_first"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "109100865733-cg4qbnr5603dpn66da1sd890ok25h1b6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrP_ymF9ZDqxGdiDVCqJTphKdijav8Szo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "109100865733-cg4qbnr5603dpn66da1sd890ok25h1b6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

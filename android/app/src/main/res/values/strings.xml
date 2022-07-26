@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<!-- <string name="app_name">QuizApp</string> -->
+<string name="facebook_app_id">744765046743872</string>
+<!-- <string name="fb_login_protocol_scheme">fb1234</string> -->
+<string name="facebook_client_token">8c0c64a28a386da8c89b3545bcb861e9</string>
+
+
+
+</resources>
