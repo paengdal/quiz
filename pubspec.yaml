@@ -42,6 +42,7 @@ dependencies:
   firebase_auth:
   kakao_flutter_sdk_user: ^1.2.1
   flutter_login_facebook:
+  cloud_firestore:
 
 
 dev_dependencies:
