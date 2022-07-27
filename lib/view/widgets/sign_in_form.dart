@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:quiz_first/constants/common_size.dart';
 import 'package:quiz_first/constants/input_deco.dart';
-import 'package:quiz_first/controller/firebase_auth_controller.dart';
+import 'package:quiz_first/controller/firebase_auth_state.dart';
 import 'package:quiz_first/util/logger.dart';
 import 'package:get/get.dart';
 import 'package:quiz_first/view/home_page.dart';
@@ -153,7 +154,7 @@ class BtnSmtLogin extends StatelessWidget {
       onPressed: () {
         if (_formKey.currentState!.validate()) {
           // Get.off(() => HomePage());
-          Get.find<FirebaseAuthController>().login(
+          context.read<FirebaseAuthState>().login(
               email: _emailController.text,
               password: _pwController.text,
               context: context);
@@ -274,7 +275,7 @@ class BtnLoginFB extends StatelessWidget {
         ),
       ),
       onPressed: () {
-        Get.find<FirebaseAuthController>().loginWithFacebook(context);
+        context.watch()<FirebaseAuthState>().loginWithFacebook(context);
       },
       icon: ExtendedImage.asset(
         'assets/imgs/f_logo_144.png',

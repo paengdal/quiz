@@ -1,7 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:quiz_first/controller/firebase_auth_controller.dart';
+import 'package:provider/provider.dart';
+import 'package:quiz_first/controller/firebase_auth_state.dart';
+import 'package:quiz_first/controller/user_model_state.dart';
+import 'package:quiz_first/model/user_model.dart';
+import 'package:quiz_first/repo/user_network_repository.dart';
 import 'package:quiz_first/util/logger.dart';
 import 'package:quiz_first/view/screens/auth_screen.dart';
 import 'package:quiz_first/view/screens/feed_screen_old.dart';
@@ -41,29 +45,39 @@ class App extends StatelessWidget {
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
 
-  final firebaseAuthController = Get.put(FirebaseAuthController());
   Widget? currentWidget;
+  FirebaseAuthState _firebaseAuthState = FirebaseAuthState();
 
   @override
   Widget build(BuildContext context) {
-    Get.find<FirebaseAuthController>().watchAuthChange();
+    _firebaseAuthState.watchAuthChange();
 //중요!!!!! 반드시 있어야 한다!!!!! 없으면 회원가입/로그인 버튼을 눌러도 반응이 없음.
 
-    return GetMaterialApp(
-      title: 'Quiz App',
-      theme: ThemeData(
-          fontFamily: 'SDneoL',
-          primarySwatch: createMaterialColor(
-            Color(0xFF000000),
-          ),
-          textTheme: TextTheme(button: TextStyle(fontSize: 16))),
-      home: GetX<FirebaseAuthController>(
-        builder: (controller) {
-          switch (controller.firebaseAuthStatus.value) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<FirebaseAuthState>.value(
+            value: _firebaseAuthState),
+        ChangeNotifierProvider<UserModelState>(
+          create: (_) => UserModelState(),
+        ),
+      ],
+      child: GetMaterialApp(
+        title: 'Quiz App',
+        theme: ThemeData(
+            fontFamily: 'SDneoL',
+            primarySwatch: createMaterialColor(
+              Color(0xFF000000),
+            ),
+            textTheme: TextTheme(button: TextStyle(fontSize: 16))),
+        home: Consumer<FirebaseAuthState>(
+            builder: (context, firebaseAuthState, child) {
+          switch (firebaseAuthState.firebaseAuthStatus) {
             case FirebaseAuthStatus.signout:
+              _clearUserModel(context);
               currentWidget = AuthScreen();
               break;
             case FirebaseAuthStatus.signin:
+              _initUserModel(firebaseAuthState, context);
               currentWidget = HomePage();
               break;
             default:
@@ -79,9 +93,27 @@ class MyApp extends StatelessWidget {
             // switchOutCurve: Curves.easeInOut,
             child: currentWidget,
           );
-        },
+        }),
       ),
     );
+  }
+
+  void _initUserModel(
+      FirebaseAuthState firebaseAuthState, BuildContext context) {
+    UserModelState userModelState =
+        Provider.of<UserModelState>(context, listen: false);
+
+    userNetworkRepository
+        .getUserModelStream(firebaseAuthState.user.uid)
+        .listen((usrMl) {
+      userModelState.userModel = usrMl;
+    });
+  }
+
+  void _clearUserModel(BuildContext context) {
+    UserModelState userModelState =
+        Provider.of<UserModelState>(context, listen: false);
+    userModelState.clear();
   }
 }
 

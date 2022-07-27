@@ -2,10 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:quiz_first/constants/common_size.dart';
-import 'package:quiz_first/controller/firebase_auth_controller.dart';
+import 'package:quiz_first/controller/firebase_auth_state.dart';
+import 'package:quiz_first/controller/user_model_state.dart';
 import 'package:quiz_first/view/screens/auth_screen.dart';
 import 'package:quiz_first/view/widgets/rounded_avatar.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -30,15 +32,22 @@ class ProfileScreen extends StatelessWidget {
                     SizedBox(
                       width: 10,
                     ),
-                    Text(
-                      '${FirebaseAuth.instance.currentUser!.email}',
-                      // '${Get.find<FirebaseAuthController>().userModel.username}',
-                      style: TextStyle(fontFamily: 'SDneoB', fontSize: 20),
+                    Column(
+                      children: [
+                        Text(
+                          // '${FirebaseAuth.instance.currentUser!.email}',
+                          '${(context.watch<UserModelState>().userModel == null) ? "userModel is null" : context.watch<UserModelState>().userModel!.username}',
+                          style: TextStyle(fontFamily: 'SDneoB', fontSize: 20),
+                        ),
+                        Text('${FirebaseAuth.instance.currentUser!.email}'),
+                      ],
                     ),
                     Expanded(child: Container()),
                     IconButton(
                       onPressed: () {
-                        Get.find<FirebaseAuthController>().signOut();
+                        // context.read<FirebaseAuthState>().signOut();
+                        Provider.of<FirebaseAuthState>(context, listen: false)
+                            .signOut();
                       },
                       icon: Icon(CupertinoIcons.escape),
                     ),

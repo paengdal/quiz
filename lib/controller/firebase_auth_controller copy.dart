@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_login_facebook/flutter_login_facebook.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:quiz_first/model/user_model.dart';
 import 'package:quiz_first/repo/user_network_repository.dart';
 import 'package:quiz_first/view/screens/auth_screen.dart';
 import 'package:quiz_first/view/widgets/my_progress_indicator.dart';
@@ -11,16 +12,27 @@ class FirebaseAuthController extends GetxController {
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   get firebaseAuthStatus => _firebaseAuthStatus;
   User? _user;
+  User get user => _user!;
   FacebookLogin? _facebookLogin;
   bool initiated = false;
 
-  void watchAuthChange() {
+  Rx<UserModel>? _userModel;
+  // var _userModel = UserModel();
+
+  Rx<UserModel>? get userModel => _userModel;
+
+  set userModel(Rx<UserModel>? userModel) {
+    _userModel = userModel;
+  }
+
+  void watchAuthChange() async {
     _firebaseAuth.authStateChanges().listen((user) {
       if (user == null && _user == null) {
         changeFirebaseAuthStatus();
         return;
       } else if (user != _user) {
         _user = user;
+        // as Rx<UserModel>?;
         changeFirebaseAuthStatus();
       }
     });
@@ -87,8 +99,9 @@ class FirebaseAuthController extends GetxController {
 
     Navigator.pop(context);
 
-    User user = userCredential.user!; // 고민: non-nullabel이 맞나?..
-    if (user == null) {
+    _user = userCredential.user; // 고민: non-nullabel이 맞나?..
+
+    if (_user == null) {
       Get.snackbar('계정 생성 에러', '회원가입이 실패했습니다. 다시 시도해주세요.',
           snackPosition: SnackPosition.BOTTOM,
           duration: Duration(seconds: 3),
@@ -100,7 +113,7 @@ class FirebaseAuthController extends GetxController {
           colorText: Colors.white);
     } else {
       await userNetworkRepository.attemptCreateUser(
-          userKey: user.uid, email: user.email!);
+          userKey: _user!.uid, email: _user!.email!);
     }
   }
 
@@ -114,7 +127,7 @@ class FirebaseAuthController extends GetxController {
         MaterialPageRoute(
             builder: (context) => MyProgressIndicator(),
             fullscreenDialog: true));
-    await _firebaseAuth
+    UserCredential userCredential = await _firebaseAuth
         .signInWithEmailAndPassword(
             email: email.trim(), password: password.trim())
         .catchError((error) {
@@ -162,6 +175,20 @@ class FirebaseAuthController extends GetxController {
       // );
     });
     Navigator.pop(context);
+
+    _user = userCredential.user;
+
+    if (_user == null) {
+      Get.snackbar('로그인 에러', '로그인이 실패했습니다. 다시 시도해주세요.',
+          snackPosition: SnackPosition.BOTTOM,
+          duration: Duration(seconds: 3),
+          backgroundColor: Colors.black87,
+          margin: EdgeInsets.all(0),
+          borderRadius: 0,
+          // isDismissible: true,
+          // dismissDirection: DismissDirection.horizontal,
+          colorText: Colors.white);
+    }
   }
 
   void signOut() async {

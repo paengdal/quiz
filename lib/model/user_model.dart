@@ -10,6 +10,7 @@ class UserModel {
   final List<dynamic> likedPosts;
   final String username;
   final List<dynamic> followings;
+  final DateTime createDate;
   final DocumentReference reference;
 
   UserModel.fromMap(Map<String, dynamic> map, this.userKey, this.reference)
@@ -19,7 +20,10 @@ class UserModel {
         likedPosts = map[KEY_LIKEDPOSTS],
         numOfFollowers = map[KEY_NUMOFFOLLOWERS],
         followings = map[KEY_FOLLOWINGS],
-        myPosts = map[KEY_MYPOSTS];
+        myPosts = map[KEY_MYPOSTS],
+        createDate = map[KEY_CREATEDATE] == null
+            ? DateTime.now().toUtc()
+            : (map["createDate"] as Timestamp).toDate();
 
   UserModel.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> snapshot)
       : this.fromMap(
@@ -37,6 +41,7 @@ class UserModel {
     map[KEY_NUMOFFOLLOWERS] = 0;
     map[KEY_FOLLOWINGS] = [];
     map[KEY_MYPOSTS] = [];
+    map[KEY_CREATEDATE] = DateTime.now().toUtc();
     return map;
   }
 }

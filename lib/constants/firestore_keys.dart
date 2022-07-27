@@ -10,6 +10,7 @@ const KEY_NUMOFFOLLOWERS = 'num_of_followers';
 const KEY_FOLLOWINGS = 'followings';
 const KEY_MYPOSTS = 'my_posts';
 const KEY_USERNAME = 'username';
+const KEY_CREATEDATE = 'create_date';
 
 const KEY_COMMENT = 'comment';
 const KEY_COMMENTTIME = 'comment_time';
